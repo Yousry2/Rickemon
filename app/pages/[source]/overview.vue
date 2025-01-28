@@ -84,140 +84,138 @@ onMounted(() => {
 </script>
 
 <template>
-  <UPage class="min-h-screen bg-gray-900 text-gray-100">
-    <UContainer>
-      <header class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-100 mb-4">
-          {{ title }} Characters Overview
-        </h1>
+  <div class="min-h-screen bg-gray-900 text-gray-100 px-20">
+    <header class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-100 mb-4">
+        {{ title }} Characters Overview
+      </h1>
 
-        <USector class="flex justify-between items-center">
-          <div>
-            <button
-              :class="view === 'list' ? 'btn-primary' : 'btn-outline'"
-              class="rounded-lg px-4 py-2 mr-2"
-              @click="setView('list')"
-            >
-              List View
-            </button>
-            <button
-              :class="view === 'grid' ? 'btn-primary' : 'btn-outline'"
-              class="rounded-lg px-4 py-2"
-              @click="setView('grid')"
-            >
-              Grid View
-            </button>
-          </div>
-          <div>
-            <button
-              :class="source === 'rick' ? 'btn-primary' : 'btn-outline'"
-              class="rounded-lg px-4 py-2 mr-2"
-              @click="switchSource('rick')"
-            >
-              Rick and Morty
-            </button>
-            <button
-              :class="source === 'pokemon' ? 'btn-primary' : 'btn-outline'"
-              class="rounded-lg px-4 py-2"
-              @click="switchSource('pokemon')"
-            >
-              Pokémon
-            </button>
-          </div>
-        </USector>
-      </header>
-
-      <div v-if="isLoading" class="text-center text-gray-300">
-        Loading...
-      </div>
-      <div v-else-if="error" class="text-red-500">
-        {{ error }}
-      </div>
-      <div v-else>
-        <USector v-if="view === 'list'" class="space-y-4">
-          <div
-            v-for="character in characters"
-            :key="character.id || character.name"
-            class="p-4 border rounded-lg shadow-md flex items-center justify-between bg-gray-800"
+      <section class="flex justify-between items-center">
+        <div>
+          <button
+            :class="view === 'list' ? 'btn-primary' : 'btn-outline'"
+            class="rounded-lg px-4 py-2 mr-2"
+            @click="setView('list')"
           >
-            <div class="flex items-center space-x-4">
-              <img
-                v-if="character.image"
-                :src="character.image"
-                :alt="character.name"
-                class="w-16 h-16 rounded-full"
-              >
-              <div>
-                <h2 class="text-lg font-semibold">
-                  {{ character.name }}
-                </h2>
-                <p v-if="character.status" class="text-sm text-gray-400">
-                  {{ character.status }} - {{ character.species }}
-                </p>
-                <p v-if="character.origin" class="text-sm text-gray-400">
-                  Origin: {{ character.origin.name || 'Unknown' }}
-                </p>
-              </div>
-            </div>
-            <button
-              class="btn-primary"
-              @click="goToDetails(character.id)"
-            >
-              View Details
-            </button>
-          </div>
-        </USector>
-
-        <!-- Grid View -->
-        <USector v-if="view === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          <div
-            v-for="character in characters"
-            :key="character.id || character.name"
-            class="p-4 border rounded-lg shadow-md bg-gray-800 text-center"
+            List View
+          </button>
+          <button
+            :class="view === 'grid' ? 'btn-primary' : 'btn-outline'"
+            class="rounded-lg px-4 py-2"
+            @click="setView('grid')"
           >
+            Grid View
+          </button>
+        </div>
+        <div>
+          <button
+            :class="source === 'rick' ? 'btn-primary' : 'btn-outline'"
+            class="rounded-lg px-4 py-2 mr-2"
+            @click="switchSource('rick')"
+          >
+            Rick and Morty
+          </button>
+          <button
+            :class="source === 'pokemon' ? 'btn-primary' : 'btn-outline'"
+            class="rounded-lg px-4 py-2"
+            @click="switchSource('pokemon')"
+          >
+            Pokémon
+          </button>
+        </div>
+      </section>
+    </header>
+
+    <div v-if="isLoading" class="text-center text-gray-300">
+      Loading...
+    </div>
+    <div v-else-if="error" class="text-red-500">
+      {{ error }}
+    </div>
+    <div v-else>
+      <section v-if="view === 'list'" class="space-y-4">
+        <div
+          v-for="character in characters"
+          :key="character.id || character.name"
+          class="p-4 border rounded-lg shadow-md flex items-center justify-between bg-gray-800"
+        >
+          <div class="flex items-center space-x-4">
             <img
               v-if="character.image"
               :src="character.image"
               :alt="character.name"
-              class="w-24 h-24 mx-auto rounded-full mb-4"
+              class="w-16 h-16 rounded-full"
             >
-            <h2 class="text-lg font-semibold mb-2">
-              {{ character.name }}
-            </h2>
-            <p v-if="character.status" class="text-sm text-gray-400">
-              {{ character.status }} - {{ character.species }}
-            </p>
-            <p v-if="character.origin" class="text-sm text-gray-400">
-              Origin: {{ character.origin.name || 'Unknown' }}
-            </p>
-            <button
-              class="btn-primary mt-4 w-full"
-              @click="goToDetails(character.id)"
-            >
-              View Details
-            </button>
+            <div>
+              <h2 class="text-lg font-semibold">
+                {{ character.name }}
+              </h2>
+              <p v-if="character.status" class="text-sm text-gray-400">
+                {{ character.status }} - {{ character.species }}
+              </p>
+              <p v-if="character.origin" class="text-sm text-gray-400">
+                Origin: {{ character.origin.name || 'Unknown' }}
+              </p>
+            </div>
           </div>
-        </USector>
-      </div>
+          <button
+            class="btn-primary"
+            @click="goToDetails(character.id)"
+          >
+            View Details
+          </button>
+        </div>
+      </section>
 
-      <USector class="flex justify-between items-center mt-6">
-        <button
-          :disabled="!info.prev"
-          class="btn-outline px-4 py-2 rounded-lg"
-          @click="fetchCharacters(info.prev ? getPage(info.prev) : null)"
+      <!-- Grid View -->
+      <section v-if="view === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div
+          v-for="character in characters"
+          :key="character.id || character.name"
+          class="p-4 border rounded-lg shadow-md bg-gray-800 text-center"
         >
-          Previous
-        </button>
-        <button
-          :disabled="!info.next"
-          class="btn-outline px-4 py-2 rounded-lg"
-          @click="fetchCharacters(info.next ? getPage(info.next) : null)"
-        >
-          Next
-        </button>
-      </USector>
-    </UContainer>
-  </UPage>
+          <img
+            v-if="character.image"
+            :src="character.image"
+            :alt="character.name"
+            class="w-24 h-24 mx-auto rounded-full mb-4"
+          >
+          <h2 class="text-lg font-semibold mb-2">
+            {{ character.name }}
+          </h2>
+          <p v-if="character.status" class="text-sm text-gray-400">
+            {{ character.status }} - {{ character.species }}
+          </p>
+          <p v-if="character.origin" class="text-sm text-gray-400">
+            Origin: {{ character.origin.name || 'Unknown' }}
+          </p>
+          <button
+            class="btn-primary mt-4 w-full"
+            @click="goToDetails(character.id)"
+          >
+            View Details
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <section class="flex justify-between items-center mt-6">
+      <button
+        :disabled="!info.prev"
+        class="btn-outline px-4 py-2 rounded-lg"
+        @click="fetchCharacters(info.prev ? getPage(info.prev) : null)"
+      >
+        Previous
+      </button>
+      <button
+        :disabled="!info.next"
+        class="btn-outline px-4 py-2 rounded-lg"
+        @click="fetchCharacters(info.next ? getPage(info.next) : null)"
+      >
+        Next
+      </button>
+    </section>
+  </div>
 </template>
 
 <style scoped>
