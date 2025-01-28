@@ -6,14 +6,7 @@
           Welcome to the home page! This is where you can start building your app.
         </h1>
       </header>
-      <div class="grid gap-4 xl:grid-cols-2">
-        <PageSection title="Rick and Morty API response">
-          <ExampleApiResponseRickAndMorty />
-        </PageSection>
-        <PageSection title="Pokemon API response">
-          <ExampleApiResponsePokemon />
-        </PageSection>
-      </div>
+      <div class="grid gap-4 xl:grid-cols-2" />
     </UContainer>
   </div>
 </template>
