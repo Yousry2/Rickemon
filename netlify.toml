@@ -6,6 +6,6 @@ command = "pnpm run build"
 NODE_VERSION = "20"
 
 [[redirects]]
-from = "/*"
-to = "/index.html"
+from = "/"
+to = "/rick/overview?page=1&view=grid"
 status = 200
