@@ -1,6 +1,7 @@
+import { appDescription, appName } from '../constants/index'
+
 import type { ModuleOptions } from '@vite-pwa/nuxt'
 import process from 'node:process'
-import { appDescription, appName } from '../constants/index'
 
 const scope = '/'
 
@@ -16,16 +17,7 @@ export const pwa: ModuleOptions = {
     description: appDescription,
     theme_color: '#ffffff',
     icons: [
-      {
-        src: 'pwa-192x192.png',
-        sizes: '192x192',
-        type: 'image/png',
-      },
-      {
-        src: 'pwa-512x512.png',
-        sizes: '512x512',
-        type: 'image/png',
-      },
+
       {
         src: 'maskable-icon.png',
         sizes: '512x512',
