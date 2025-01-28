@@ -1,5 +1,5 @@
-import { pwa } from './app/config/pwa'
 import { appDescription } from './app/constants/index'
+import { pwa } from './app/config/pwa'
 
 export default defineNuxtConfig({
   modules: [
@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxt/image',
   ],
+
 
   experimental: {
     payloadExtraction: false,
@@ -65,15 +66,20 @@ export default defineNuxtConfig({
     compatibilityVersion: 4,
   },
 
-  compatibilityDate: '2024-08-14',
+  compatibilityDate: '2025-01-25',
 
-  apiParty: {
-    endpoints: {
-      pokemon: {
-        url: 'https://pokeapi.co/api/v2',
-      },
-      rickAndMorty: {
-        url: 'https://rickandmortyapi.com/api',
+  
+  runtimeConfig: {
+    public: {
+      apiParty: {
+        endpoints: {
+          pokemon: {
+            url: 'https://pokeapi.co/api/v2',
+          },
+          rickAndMorty: {
+            url: 'https://rickandmortyapi.com/api',
+          },
+        },
       },
     },
   },
