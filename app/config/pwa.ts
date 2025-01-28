@@ -17,13 +17,6 @@ export const pwa: ModuleOptions = {
     description: appDescription,
     theme_color: '#ffffff',
     icons: [
-
-      {
-        src: 'maskable-icon.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'any maskable',
-      },
     ],
   },
   workbox: {
