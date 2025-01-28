@@ -1,10 +1,235 @@
-<script setup>
+<script lang="ts" setup>
+import { useCharacterStore } from '@/stores/characters'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
+type Source = 'rick' | 'pokemon'
+type View = 'list' | 'grid'
+
+interface RouteParams {
+  source: Source
+}
+
+interface QueryParams {
+  view?: View
+  page?: string
+}
+
+const route = useRoute()
+const router = useRouter()
+const params = route.params as RouteParams
+const query = route.query as QueryParams
+
+const source = ref<Source>(params.source)
+const view = ref<View>(query.view || 'list')
+const page = ref<number>(Number.parseInt(query.page as string) || 1)
+
+const characterStore = useCharacterStore()
+const { characters, info, isLoading, error } = characterStore
+
+const title = computed(() => (source.value === 'pokemon' ? 'Pokémon' : 'Rick and Morty'))
+
+async function fetchCharacters(pageNumber: number) {
+  page.value = pageNumber
+  if (source.value === 'rick') {
+    await characterStore.fetchRickAndMortyCharacters(pageNumber)
+  }
+  else if (source.value === 'pokemon') {
+    const offset = (pageNumber - 1) * 20
+    await characterStore.fetchPokemonCharacters(offset)
+  }
+}
+
+function setView(newView: View) {
+  view.value = newView
+  router.push({
+    name: 'source-overview',
+    params: { source: source.value },
+    query: { ...route.query, view: newView },
+  })
+}
+
+function switchSource(newSource: Source) {
+  source.value = newSource
+  router.push({
+    name: 'source-overview',
+    params: { source: newSource },
+    query: { ...route.query, page: page.value.toString() },
+  })
+}
+
+function goToDetails(characterId: string | number) {
+  router.push({
+    path: `/${source.value}/details/${characterId}`,
+  })
+}
+
+watch(() => route.params.source, (newSource) => {
+  source.value = newSource as Source
+  fetchCharacters(page.value)
+})
+
+watch(() => route.query.page, (newPage) => {
+  page.value = Number.parseInt(newPage as string) || 1
+  fetchCharacters(page.value)
+})
+
+watch(() => route.query.view, (newView) => {
+  view.value = newView as View || 'list'
+})
+
+onMounted(() => {
+  fetchCharacters(page.value)
+})
 </script>
 
 <template>
-  <div />
+  <UPage class="min-h-screen bg-gray-900 text-gray-100">
+    <UContainer>
+      <header class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-100 mb-4">
+          {{ title }} Characters Overview
+        </h1>
+
+        <USector class="flex justify-between items-center">
+          <div>
+            <button
+              :class="view === 'list' ? 'btn-primary' : 'btn-outline'"
+              class="rounded-lg px-4 py-2 mr-2"
+              @click="setView('list')"
+            >
+              List View
+            </button>
+            <button
+              :class="view === 'grid' ? 'btn-primary' : 'btn-outline'"
+              class="rounded-lg px-4 py-2"
+              @click="setView('grid')"
+            >
+              Grid View
+            </button>
+          </div>
+          <div>
+            <button
+              :class="source === 'rick' ? 'btn-primary' : 'btn-outline'"
+              class="rounded-lg px-4 py-2 mr-2"
+              @click="switchSource('rick')"
+            >
+              Rick and Morty
+            </button>
+            <button
+              :class="source === 'pokemon' ? 'btn-primary' : 'btn-outline'"
+              class="rounded-lg px-4 py-2"
+              @click="switchSource('pokemon')"
+            >
+              Pokémon
+            </button>
+          </div>
+        </USector>
+      </header>
+
+      <div v-if="isLoading" class="text-center text-gray-300">
+        Loading...
+      </div>
+      <div v-else-if="error" class="text-red-500">
+        {{ error }}
+      </div>
+      <div v-else>
+        <USector v-if="view === 'list'" class="space-y-4">
+          <div
+            v-for="character in characters"
+            :key="character.id || character.name"
+            class="p-4 border rounded-lg shadow-md flex items-center justify-between bg-gray-800"
+          >
+            <div class="flex items-center space-x-4">
+              <img
+                v-if="character.image"
+                :src="character.image"
+                :alt="character.name"
+                class="w-16 h-16 rounded-full"
+              >
+              <div>
+                <h2 class="text-lg font-semibold">
+                  {{ character.name }}
+                </h2>
+                <p v-if="character.status" class="text-sm text-gray-400">
+                  {{ character.status }} - {{ character.species }}
+                </p>
+                <p v-if="character.origin" class="text-sm text-gray-400">
+                  Origin: {{ character.origin.name || 'Unknown' }}
+                </p>
+              </div>
+            </div>
+            <button
+              class="btn-primary"
+              @click="goToDetails(character.id)"
+            >
+              View Details
+            </button>
+          </div>
+        </USector>
+
+        <!-- Grid View -->
+        <USector v-if="view === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div
+            v-for="character in characters"
+            :key="character.id || character.name"
+            class="p-4 border rounded-lg shadow-md bg-gray-800 text-center"
+          >
+            <img
+              v-if="character.image"
+              :src="character.image"
+              :alt="character.name"
+              class="w-24 h-24 mx-auto rounded-full mb-4"
+            >
+            <h2 class="text-lg font-semibold mb-2">
+              {{ character.name }}
+            </h2>
+            <p v-if="character.status" class="text-sm text-gray-400">
+              {{ character.status }} - {{ character.species }}
+            </p>
+            <p v-if="character.origin" class="text-sm text-gray-400">
+              Origin: {{ character.origin.name || 'Unknown' }}
+            </p>
+            <button
+              class="btn-primary mt-4 w-full"
+              @click="goToDetails(character.id)"
+            >
+              View Details
+            </button>
+          </div>
+        </USector>
+      </div>
+
+      <USector class="flex justify-between items-center mt-6">
+        <button
+          :disabled="!info.prev"
+          class="btn-outline px-4 py-2 rounded-lg"
+          @click="fetchCharacters(info.prev ? getPage(info.prev) : null)"
+        >
+          Previous
+        </button>
+        <button
+          :disabled="!info.next"
+          class="btn-outline px-4 py-2 rounded-lg"
+          @click="fetchCharacters(info.next ? getPage(info.next) : null)"
+        >
+          Next
+        </button>
+      </USector>
+    </UContainer>
+  </UPage>
 </template>
 
 <style scoped>
+.btn-primary {
+  @apply bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200;
+}
+
+.btn-outline {
+  @apply border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg transition duration-200;
+}
+
+.btn-outline:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
 </style>
