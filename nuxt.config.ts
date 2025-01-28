@@ -1,5 +1,5 @@
-import { appDescription } from './app/constants/index'
 import { pwa } from './app/config/pwa'
+import { appDescription } from './app/constants/index'
 
 export default defineNuxtConfig({
   modules: [
@@ -12,7 +12,6 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxt/image',
   ],
-
 
   experimental: {
     payloadExtraction: false,
@@ -28,7 +27,7 @@ export default defineNuxtConfig({
     },
     prerender: {
       crawlLinks: false,
-      routes: ['/', '/assignment', '/rick/overview', 'pokemon/overview'],
+      routes: ['/', '/assignment'],
     },
   },
 
@@ -68,7 +67,6 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-25',
 
-  
   runtimeConfig: {
     public: {
       apiParty: {
