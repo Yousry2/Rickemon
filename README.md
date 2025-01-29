@@ -1,6 +1,6 @@
 #  RickeMon App
 
-<a alt="DA-DESK logo" href="[https://yousry2.github.io/touchtribe](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1)](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1" target="_blank" rel="noreferrer"><img src="https://yousry2.github.io/Rickemon/screenshot.jpg" width="800"></a>
+<a alt="DA-DESK logo" href="[https://yousry2.github.io/touchtribe](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1)](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1" target="_blank" rel="noreferrer"><img src="https://yousry2.github.io/Rickemon/screenshot.png" width="800"></a>
 
 ## ✨ ** [Check Live Demo]([https://yousry2.github.io/touchtribe/](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1&view=grid)).✨ **
 
@@ -8,29 +8,29 @@
 <br>
 
 ## Tasks to be completed
-[[Done]] ~~- Set up the foundational structure for pages and components, including Character Overview, Character Details, ListCard, and GridCard.~~
+- [[Done]] ~~- Set up the foundational structure for pages and components, including Character Overview, Character Details, ListCard, and GridCard.~~
 
-[[Done]] ~~- Configure routing with the necessary query parameters.~~
+- [[Done]] ~~- Configure routing with the necessary query parameters.~~
 
-[[Done]] ~~- Develop the Character Overview page with all its features.~~
+- [[Done]] ~~- Develop the Character Overview page with all its features.~~
 
-[[Done]] ~~- Implement pagination support for both data sources.~~
+- [[Done]] ~~- Implement pagination support for both data sources.~~
 
-[[Done]] ~~- Create a Character Store to manage API calls, utilizing API configurations from Nuxt config.~~
+- [[Done]] ~~- Create a Character Store to manage API calls, utilizing API configurations from Nuxt config.~~
  
- - Set up unit testing with Vitest, incorporating the Page Object Model.
+- Set up unit testing with Vitest, incorporating the Page Object Model.
  
-[[Done]] ~~- Build and integrate GridCard and ListCard components.~~
+- [[Done]] ~~- Build and integrate GridCard and ListCard components.~~
 
-Replace standard HTML components with Nuxt UI for a refined UI experience.
+- Replace standard HTML components with Nuxt UI for a refined UI experience.
 
-Develop the Character Details component and page.
+- Develop the Character Details component and page.
 
-[[Done]] ~~- Add navigation links to access detailed character views.~~
+- [[Done]] ~~- Add navigation links to access detailed character views.~~
 
-Install and configure Playwright for end-to-end testing.
+- Install and configure Playwright for end-to-end testing.
 
-Implement E2E tests using Playwright to validate application functionality.
+- Implement E2E tests using Playwright to validate application functionality.
 <br>
 
 ## Run Application locally
@@ -41,4 +41,6 @@ Implement E2E tests using Playwright to validate application functionality.
 
 3- Install app libraries using npm i 
 
-4- Install app libraries using npm run dev
+4- run application locally npm run dev 
+
+5- After build check application on http://localhost:3000/rick/overview 
