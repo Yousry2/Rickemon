@@ -1,6 +1,6 @@
 #  RickeMon App
 
-<a alt="DA-DESK logo" href="https://yousry2.github.io/touchtribe](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1" target="_blank" rel="noreferrer"><img src="https://yousry2.github.io/touchtribe/static/screenshot.jpg" width="800"></a>
+<a alt="DA-DESK logo" href="[https://yousry2.github.io/touchtribe](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1)](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1" target="_blank" rel="noreferrer"><img src="https://yousry2.github.io/Rickemon/screenshot.jpg" width="800"></a>
 
 ## ✨ ** [Check Live Demo]([https://yousry2.github.io/touchtribe/](https://leafy-malasada-eb9968.netlify.app/pokemon/overview?page=1&view=grid)).✨ **
 
@@ -8,17 +8,28 @@
 <br>
 
 ## Tasks to be completed
-[[Done]] - Set up the foundational structure for pages and components, including Character Overview, Character Details, ListCard, and GridCard.
-[[Done]] - Configure routing with the necessary query parameters.
-[[Done]] - Develop the Character Overview page with all its features.
-[[Done]] - Implement pagination support for both data sources.
-[[Done]] - Create a Character Store to manage API calls, utilizing API configurations from Nuxt config.
+[[Done]] ~~- Set up the foundational structure for pages and components, including Character Overview, Character Details, ListCard, and GridCard.~~
+
+[[Done]] ~~- Configure routing with the necessary query parameters.~~
+
+[[Done]] ~~- Develop the Character Overview page with all its features.~~
+
+[[Done]] ~~- Implement pagination support for both data sources.~~
+
+[[Done]] ~~- Create a Character Store to manage API calls, utilizing API configurations from Nuxt config.~~
+ 
  - Set up unit testing with Vitest, incorporating the Page Object Model.
-[[Done]] - Build and integrate GridCard and ListCard components.
+ 
+[[Done]] ~~- Build and integrate GridCard and ListCard components.~~
+
 Replace standard HTML components with Nuxt UI for a refined UI experience.
+
 Develop the Character Details component and page.
-[[Done]] - Add navigation links to access detailed character views.
+
+[[Done]] ~~- Add navigation links to access detailed character views.~~
+
 Install and configure Playwright for end-to-end testing.
+
 Implement E2E tests using Playwright to validate application functionality.
 <br>
 
