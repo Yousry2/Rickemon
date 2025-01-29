@@ -84,7 +84,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-900 text-gray-100 px-20">
+  <div class="min-h-screen bg-gray-900 text-gray-100 px-20 py-10">
     <header class="mb-6">
       <h1 class="text-2xl font-bold text-gray-100 mb-4">
         {{ title }} Characters Overview
@@ -134,68 +134,26 @@ onMounted(() => {
     </div>
     <div v-else>
       <section v-if="view === 'list'" class="space-y-4">
-        <div
+        <ListCard
           v-for="character in characters"
           :key="character.id || character.name"
-          class="p-4 border rounded-lg shadow-md flex items-center justify-between bg-gray-800"
-        >
-          <div class="flex items-center space-x-4">
-            <img
-              v-if="character.image"
-              :src="character.image"
-              :alt="character.name"
-              class="w-16 h-16 rounded-full"
-            >
-            <div>
-              <h2 class="text-lg font-semibold">
-                {{ character.name }}
-              </h2>
-              <p v-if="character.status" class="text-sm text-gray-400">
-                {{ character.status }} - {{ character.species }}
-              </p>
-              <p v-if="character.origin" class="text-sm text-gray-400">
-                Origin: {{ character.origin.name || 'Unknown' }}
-              </p>
-            </div>
-          </div>
-          <button
-            class="btn-primary"
-            @click="goToDetails(character.id)"
-          >
-            View Details
-          </button>
-        </div>
+          :character="character"
+          @view-details="goToDetails"
+        />
+        v-for="character in characters"
+        :key="character.id || character.name"
+        :character="character"
+        @view-details="goToDetails"
+        />
       </section>
 
-      <!-- Grid View -->
       <section v-if="view === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <div
+        <GridCard
           v-for="character in characters"
           :key="character.id || character.name"
-          class="p-4 border rounded-lg shadow-md bg-gray-800 text-center"
-        >
-          <img
-            v-if="character.image"
-            :src="character.image"
-            :alt="character.name"
-            class="w-24 h-24 mx-auto rounded-full mb-4"
-          >
-          <h2 class="text-lg font-semibold mb-2">
-            {{ character.name }}
-          </h2>
-          <p v-if="character.status" class="text-sm text-gray-400">
-            {{ character.status }} - {{ character.species }}
-          </p>
-          <p v-if="character.origin" class="text-sm text-gray-400">
-            Origin: {{ character.origin.name || 'Unknown' }}
-          </p>
-          <button
-            class="btn-primary mt-4 w-full"
-            @click="goToDetails(character.id)"
-          >
-            View Details
-          </button>
-        </div>
+          :character="character"
+          @view-details="goToDetails"
+        />
       </section>
     </div>
 
@@ -203,14 +161,14 @@ onMounted(() => {
       <button
         :disabled="!info.prev"
         class="btn-outline px-4 py-2 rounded-lg"
-        @click="fetchCharacters(info.prev ? getPage(info.prev) : null)"
+        @click="fetchCharacters(info.prev ? parseInt(info.prev) : 1)"
       >
         Previous
       </button>
       <button
         :disabled="!info.next"
         class="btn-outline px-4 py-2 rounded-lg"
-        @click="fetchCharacters(info.next ? getPage(info.next) : null)"
+        @click="fetchCharacters(info.next ? parseInt(info.next) : 1)"
       >
         Next
       </button>

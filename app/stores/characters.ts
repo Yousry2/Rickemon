@@ -1,14 +1,6 @@
+import type { Character } from '~/models/character'
 import { api } from '#app'
 import { defineStore } from 'pinia'
-
-interface Character {
-  id?: number
-  name: string
-  status?: string
-  species?: string
-  image?: string
-  url?: string
-}
 
 interface PaginationInfo {
   count?: number
