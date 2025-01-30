@@ -1,57 +1,42 @@
-<script lang="ts" setup>
-import type { RouteParams } from 'vue-router'
+<script setup lang="ts">
+import type { SourceOption, ViewOption } from '@/config/constants'
 import CharacterGrid from '@/components/CharacterGrid.vue'
 import CharacterList from '@/components/CharacterList.vue'
 import SourceSwitcher from '@/components/SourceSwitcher.vue'
 import ViewSwitcher from '@/components/ViewSwitcher.vue'
-
 import { useFetchCharacters } from '@/composables/useFetchCharacters'
 import { SOURCES, VIEW_MODES } from '@/config/constants'
 import { useCharacterStore } from '@/stores/characters'
-import { computed, onMounted, ref, watch } from 'vue'
-
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-interface RouteParamsWithSource extends RouteParams {
-  source: string
-}
-
-const route = useRoute<RouteParamsWithSource>()
+const route = useRoute()
 const router = useRouter()
+const source = route.params.source
 const characterStore = useCharacterStore()
 const { characters, info, isLoading, error } = characterStore
 
-const { source, page, fetchCharacters } = useFetchCharacters()
+const { page, fetchCharacters } = useFetchCharacters()
 
 const view = ref<string>((route.query.view as string) ?? VIEW_MODES[0]?.key)
 
-const title = computed<string>(() => SOURCES.find(s => s.key === route.params.source)?.label || 'Characters')
+const title = computed(() => SOURCES.find(s => s.key === source.value)?.label || 'Characters')
 
-function setView(newView: string): void {
-  view.value = newView
-  router.push({ name: 'source-overview', params: { source: route.params.source }, query: { view: newView } })
+function setView(newView: ViewOption): void {
+  view.value = newView.key
+  router.push({ name: 'source-overview', params: { source: source.value }, query: { view: newView.key } })
 }
 
-function switchSource(newSource: string): void {
-  if (SOURCES.some(s => s.key === newSource)) {
-    router.push({ name: 'source-overview', params: { source: newSource }, query: { view: view.value } })
-  }
+function switchSource(newSource: SourceOption): void {
+  router.push({ name: 'source-overview', params: { source: newSource.key }, query: { view: view.value } })
 }
 
 function goToDetails(characterId: string | number): void {
-  router.push({ path: `/${route.params.source}/details/${characterId}` })
+  router.push({ path: `/${source.value}/details/${characterId}` })
 }
 
-watch(() => route.params.source, () => {
-  fetchCharacters(page)
-})
-
-onMounted(() => {
-  fetchCharacters(page)
-})
-
-watch(() => route.query.view, (newView) => {
-  view.value = (newView as string) ?? VIEW_MODES[0]?.key
+watch(source, () => {
+  fetchCharacters(page.value)
 })
 </script>
 
@@ -75,12 +60,12 @@ watch(() => route.query.view, (newView) => {
       {{ error }}
     </div>
     <div v-else>
-      <CharacterList v-if="view === 'list'" :characters="characters" :go-to-details="goToDetails" />
-      <CharacterGrid v-else :characters="characters" :go-to-details="goToDetails" />
+      <CharacterList v-if="view === 'list'" :characters="characters" @view-details="goToDetails" />
+      <CharacterGrid v-else :characters="characters" @view-details="goToDetails" />
     </div>
 
     <section class="flex justify-between items-center mt-6">
-      <button :disabled="page !== 1" class="btn-outline px-4 py-2 rounded-lg" @click="fetchCharacters(page - 1)">
+      <button :disabled="page === 1" class="btn-outline px-4 py-2 rounded-lg" @click="fetchCharacters(page - 1)">
         Previous
       </button>
       <button :disabled="info?.count <= page * 20" class="btn-outline px-4 py-2 rounded-lg" @click="fetchCharacters(page + 1)">
@@ -89,3 +74,17 @@ watch(() => route.query.view, (newView) => {
     </section>
   </div>
 </template>
+
+<style>
+.btn-primary {
+  @apply bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200;
+}
+
+.btn-outline {
+  @apply border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg transition duration-200;
+}
+
+.btn-outline:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+</style>

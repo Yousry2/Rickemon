@@ -166,16 +166,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
-.btn-primary {
-  @apply bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200;
-}
 
-.btn-outline {
-  @apply border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg transition duration-200;
-}
-
-.btn-outline:disabled {
-  @apply opacity-50 cursor-not-allowed;
-}
-</style>

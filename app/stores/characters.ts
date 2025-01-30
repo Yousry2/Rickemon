@@ -55,6 +55,8 @@ export const useCharacterStore = defineStore('characterStore', {
         const response = await fetch(
           `${url}/pokemon?offset=${offset}&limit=20`,
         )
+
+        //just a hack to retrieve dummy images 
         const data = await response.json()
         this.characters = data.results.map((item: { name: string, url: string }) => ({
           name: item.name,
@@ -64,6 +66,7 @@ export const useCharacterStore = defineStore('characterStore', {
         }))
         this.info = data.info
       }
+      
       catch {
         this.error = 'Failed to load Pokémon characters.'
       }

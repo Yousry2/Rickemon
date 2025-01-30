@@ -1,8 +1,8 @@
 # RickeMon App
 
-<a alt="DA-DESK logo" href="(https://leafy-malasada-eb9968.netlify.app/pokemon/overview)](https://leafy-malasada-eb9968.netlify.app/pokemon/overview" target="_blank" rel="noreferrer"><img src="https://yousry2.github.io/Rickemon/screenshot.png" width="800"></a>
+<a alt="DA-DESK logo" href="(https://leafy-malasada-eb9968.netlify.app/rick/overview)](https://leafy-malasada-eb9968.netlify.app/rick/overview" target="_blank" rel="noreferrer"><img src="https://yousry2.github.io/Rickemon/screenshot.png" width="800"></a>
 
-## ✨ ** [Check Live Demo](https://leafy-malasada-eb9968.netlify.app/pokemon/overview).✨ **
+## ✨ ** [Check Live Demo](https://leafy-malasada-eb9968.netlify.app/rick/overview).✨ **
 
 <br>
 
