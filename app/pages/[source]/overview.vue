@@ -1,80 +1,57 @@
 <script lang="ts" setup>
+import type { RouteParams } from 'vue-router'
+import CharacterGrid from '@/components/CharacterGrid.vue'
+import CharacterList from '@/components/CharacterList.vue'
+import SourceSwitcher from '@/components/SourceSwitcher.vue'
+import ViewSwitcher from '@/components/ViewSwitcher.vue'
+
+import { useFetchCharacters } from '@/composables/useFetchCharacters'
+import { SOURCES, VIEW_MODES } from '@/config/constants'
 import { useCharacterStore } from '@/stores/characters'
 import { computed, onMounted, ref, watch } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
 
-type Source = 'rick' | 'pokemon'
-type View = 'list' | 'grid'
-
-interface RouteParams {
-  source: Source
+interface RouteParamsWithSource extends RouteParams {
+  source: string
 }
 
-interface QueryParams {
-  view?: View
-}
-
-const route = useRoute()
+const route = useRoute<RouteParamsWithSource>()
 const router = useRouter()
-const params = route.params as RouteParams
-const query = route.query as QueryParams
-
-const source = ref<Source>(params.source)
-const view = ref<View>(query.view || 'list')
-const page = ref<number>(Number.parseInt(query.page as string) || 1)
-
 const characterStore = useCharacterStore()
 const { characters, info, isLoading, error } = characterStore
 
-const title = computed(() => (source.value === 'pokemon' ? 'Pokémon' : 'Rick and Morty'))
+const { source, page, fetchCharacters } = useFetchCharacters()
 
-async function fetchCharacters(pageNumber: number) {
-  page.value = pageNumber
-  if (source.value === 'rick') {
-    await characterStore.fetchRickAndMortyCharacters(pageNumber)
-  }
-  else if (source.value === 'pokemon') {
-    const offset = (pageNumber - 1) * 20
-    await characterStore.fetchPokemonCharacters(offset)
-  }
-}
+const view = ref<string>((route.query.view as string) ?? VIEW_MODES[0]?.key)
 
-function setView(newView: View) {
+const title = computed<string>(() => SOURCES.find(s => s.key === route.params.source)?.label || 'Characters')
+
+function setView(newView: string): void {
   view.value = newView
-  router.push({
-    name: 'source-overview',
-    params: { source: source.value },
-    query: { ...route.query, view: newView },
-  })
+  router.push({ name: 'source-overview', params: { source: route.params.source }, query: { view: newView } })
 }
 
-function switchSource(newSource: Source) {
-  source.value = newSource
-  router.push({
-    name: 'source-overview',
-    params: { source: newSource },
-    query: { ...route.query, },
-  })
+function switchSource(newSource: string): void {
+  if (SOURCES.some(s => s.key === newSource)) {
+    router.push({ name: 'source-overview', params: { source: newSource }, query: { view: view.value } })
+  }
 }
 
-function goToDetails(characterId: string | number) {
-  router.push({
-    path: `/${source.value}/details/${characterId}`,
-  })
+function goToDetails(characterId: string | number): void {
+  router.push({ path: `/${route.params.source}/details/${characterId}` })
 }
 
-watch(() => route.params.source, (newSource) => {
-  source.value = newSource as Source
-  fetchCharacters(page.value)
-})
-
-
-watch(() => route.query.view, (newView) => {
-  view.value = newView as View || 'grid'
+watch(() => route.params.source, () => {
+  fetchCharacters(page)
 })
 
 onMounted(() => {
- fetchCharacters(page.value)
+  fetchCharacters(page)
+})
+
+watch(() => route.query.view, (newView) => {
+  view.value = (newView as string) ?? VIEW_MODES[0]?.key
 })
 </script>
 
@@ -86,38 +63,8 @@ onMounted(() => {
       </h1>
 
       <section class="flex justify-between items-center">
-        <div>
-          <button
-            :class="view === 'list' ? 'btn-primary' : 'btn-outline'"
-            class="rounded-lg px-4 py-2 mr-2"
-            @click="setView('list')"
-          >
-            List View
-          </button>
-          <button
-            :class="view === 'grid' ? 'btn-primary' : 'btn-outline'"
-            class="rounded-lg px-4 py-2"
-            @click="setView('grid')"
-          >
-            Grid View
-          </button>
-        </div>
-        <div>
-          <button
-            :class="source === 'rick' ? 'btn-primary' : 'btn-outline'"
-            class="rounded-lg px-4 py-2 mr-2"
-            @click="switchSource('rick')"
-          >
-            Rick and Morty
-          </button>
-          <button
-            :class="source === 'pokemon' ? 'btn-primary' : 'btn-outline'"
-            class="rounded-lg px-4 py-2"
-            @click="switchSource('pokemon')"
-          >
-            Pokémon
-          </button>
-        </div>
+        <ViewSwitcher :view="view" :set-view="setView" />
+        <SourceSwitcher :source="source" :switch-source="switchSource" />
       </section>
     </header>
 
@@ -128,54 +75,17 @@ onMounted(() => {
       {{ error }}
     </div>
     <div v-else>
-      <section v-if="view === 'list'" class="space-y-4">
-        <ListCard
-          v-for="character in characters"
-          :key="character.id || character.name"
-          :character="character"
-          @view-details="goToDetails"
-        />
-      </section>
-
-      <section v-if="view === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <GridCard
-          v-for="character in characters"
-          :key="character.id || character.name"
-          :character="character"
-          @view-details="goToDetails"
-        />
-      </section>
+      <CharacterList v-if="view === 'list'" :characters="characters" :go-to-details="goToDetails" />
+      <CharacterGrid v-else :characters="characters" :go-to-details="goToDetails" />
     </div>
 
     <section class="flex justify-between items-center mt-6">
-      <button
-        :disabled="page !== 1"
-        class="btn-outline px-4 py-2 rounded-lg"
-        @click="fetchCharacters(page - 1)"
-      >
+      <button :disabled="page !== 1" class="btn-outline px-4 py-2 rounded-lg" @click="fetchCharacters(page - 1)">
         Previous
       </button>
-      <button
-        :disabled="info?.count <= page * 20"
-        class="btn-outline px-4 py-2 rounded-lg"
-        @click="fetchCharacters(page + 1)"
-      >
+      <button :disabled="info?.count <= page * 20" class="btn-outline px-4 py-2 rounded-lg" @click="fetchCharacters(page + 1)">
         Next
       </button>
     </section>
   </div>
 </template>
-
-<style scoped>
-.btn-primary {
-  @apply bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200;
-}
-
-.btn-outline {
-  @apply border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-lg transition duration-200;
-}
-
-.btn-outline:disabled {
-  @apply opacity-50 cursor-not-allowed;
-}
-</style>
