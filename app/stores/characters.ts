@@ -62,10 +62,7 @@ export const useCharacterStore = defineStore('characterStore', {
             item.url.split('/').slice(-2, -1)[0]
           }.png`,
         }))
-        this.info = {
-          next: data.next,
-          prev: data.previous,
-        }
+        this.info = data.info
       }
       catch {
         this.error = 'Failed to load Pokémon characters.'

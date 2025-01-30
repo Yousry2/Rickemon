@@ -12,7 +12,6 @@ interface RouteParams {
 
 interface QueryParams {
   view?: View
-  page?: string
 }
 
 const route = useRoute()
@@ -54,7 +53,7 @@ function switchSource(newSource: Source) {
   router.push({
     name: 'source-overview',
     params: { source: newSource },
-    query: { ...route.query, page: page.value.toString() },
+    query: { ...route.query, },
   })
 }
 
@@ -69,17 +68,13 @@ watch(() => route.params.source, (newSource) => {
   fetchCharacters(page.value)
 })
 
-watch(() => route.query.page, (newPage) => {
-  page.value = Number.parseInt(newPage as string) || 1
-  fetchCharacters(page.value)
-})
 
 watch(() => route.query.view, (newView) => {
-  view.value = newView as View || 'list'
+  view.value = newView as View || 'grid'
 })
 
 onMounted(() => {
-  fetchCharacters(page.value)
+ fetchCharacters(page.value)
 })
 </script>
 
@@ -140,11 +135,6 @@ onMounted(() => {
           :character="character"
           @view-details="goToDetails"
         />
-        v-for="character in characters"
-        :key="character.id || character.name"
-        :character="character"
-        @view-details="goToDetails"
-        />
       </section>
 
       <section v-if="view === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -159,16 +149,16 @@ onMounted(() => {
 
     <section class="flex justify-between items-center mt-6">
       <button
-        :disabled="!info.prev"
+        :disabled="page !== 1"
         class="btn-outline px-4 py-2 rounded-lg"
-        @click="fetchCharacters(info.prev ? parseInt(info.prev) : 1)"
+        @click="fetchCharacters(page - 1)"
       >
         Previous
       </button>
       <button
-        :disabled="!info.next"
+        :disabled="info?.count <= page * 20"
         class="btn-outline px-4 py-2 rounded-lg"
-        @click="fetchCharacters(info.next ? parseInt(info.next) : 1)"
+        @click="fetchCharacters(page + 1)"
       >
         Next
       </button>
