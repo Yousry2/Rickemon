@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { SourceOption, ViewOption } from '@/config/constants'
+import type { SourceOption, SwitchOption, ViewOption } from '@/config/constants'
 import CharacterGrid from '@/components/CharacterGrid.vue'
 import CharacterList from '@/components/CharacterList.vue'
-import SourceSwitcher from '@/components/SourceSwitcher.vue'
-import ViewSwitcher from '@/components/ViewSwitcher.vue'
 import { useFetchCharacters } from '@/composables/useFetchCharacters'
 import { SOURCES, VIEW_MODES } from '@/config/constants'
 import { useCharacterStore } from '@/stores/characters'
@@ -22,12 +20,12 @@ const view = ref<string>((route.query.view as string) ?? VIEW_MODES[0]?.key)
 
 const title = computed(() => SOURCES.find(s => s.key === source.value)?.label || 'Characters')
 
-function setView(newView: ViewOption): void {
+function setView(newView: SwitchOption<ViewOption>): void {
   view.value = newView.key
   router.push({ name: 'source-overview', params: { source: source.value }, query: { view: newView.key } })
 }
 
-function switchSource(newSource: SourceOption): void {
+function switchSource(newSource: SwitchOption<ViewOption>): void {
   router.push({ name: 'source-overview', params: { source: newSource.key }, query: { view: view.value } })
 }
 
@@ -48,8 +46,8 @@ watch(source, () => {
       </h1>
 
       <section class="flex justify-between items-center">
-        <ViewSwitcher :view="view" :set-view="setView" />
-        <SourceSwitcher :source="source" :switch-source="switchSource" />
+        <Switcher :selected-option="view" :options="VIEW_MODES" :on-switch="setView" />
+        <Switcher :selected-option="source" :options="SOURCES" :on-switch="switchSource" />
       </section>
     </header>
 
@@ -60,8 +58,8 @@ watch(source, () => {
       {{ error }}
     </div>
     <div v-else>
-      <CharacterList v-if="view === 'list'" :characters="characters" @view-details="goToDetails" />
-      <CharacterGrid v-else :characters="characters" @view-details="goToDetails" />
+      <CharacterList v-if="view === 'list'" :characters="characters" :view-details="goToDetails" />
+      <CharacterGrid v-else :characters="characters" :view-details="goToDetails" />
     </div>
 
     <section class="flex justify-between items-center mt-6">

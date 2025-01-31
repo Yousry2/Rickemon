@@ -1,19 +1,19 @@
-<script lang="ts" setup>
-import type { SourceOption } from '@/config/constants'
-import { SOURCES } from '@/config/constants'
+<script lang="ts" setup generic="T extends SwitchOption<any>">
+import type {  SwitchOption } from '@/config/constants'
+
 import { defineProps } from 'vue'
 
-defineProps<{ source: string, switchSource: (source: SourceOption) => void }>()
+defineProps<{ selectedOption: string, options: T[], onSwitch: (source: T) => void }>()
 </script>
 
 <template>
   <div>
     <button
-      v-for="src in SOURCES"
+      v-for="src in options"
       :key="src.key"
       :class="source === src.key ? 'btn-primary' : 'btn-outline'"
       class="rounded-lg px-4 py-2 mr-2"
-      @click="switchSource(src)"
+      @click="onSwitch(src)"
     >
       {{ src.label }}
     </button>

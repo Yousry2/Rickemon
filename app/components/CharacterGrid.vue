@@ -2,7 +2,7 @@
 import GridCard from '@/components/GridCard.vue'
 import { defineProps } from 'vue'
 
-defineProps<{ characters: any[], goToDetails: (id: string | number) => void }>()
+defineProps<{ characters: any[], viewDetails: (id: string | number) => void }>()
 </script>
 
 <template>
@@ -11,7 +11,7 @@ defineProps<{ characters: any[], goToDetails: (id: string | number) => void }>()
       v-for="character in characters"
       :key="character.id || character.name"
       :character="character"
-      @view-details="goToDetails"
+      @view-details="viewDetails"
     />
   </section>
 </template>
